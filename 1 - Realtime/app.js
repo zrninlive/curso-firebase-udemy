@@ -43,9 +43,15 @@ function criarCard() {
   /**
    * push(): cria um id unico e insere os dados dentro desse uid
    */
-  refCard.push(card).then((snapshot) => {
-    //adicionaCardATela(card, snapshot.key);
-  });
+  // refCard.push(card).then((snapshot) => {
+  //   //adicionaCardATela(card, snapshot.key);
+  // });
+
+  fetch("https://app-firebase-udemy.firebaseio.com/card.json", {
+    body: JSON.stringify(card),
+    method: "POST",
+    mode: "no-cors",
+  }).catch((err) => console.log(err));
 }
 
 /**
@@ -61,7 +67,10 @@ function deletar(id) {
   refCard
     .child(id)
     .remove()
-    .then(() => card.remove());
+    .then(() => card.remove())
+    .catch((err) => {
+      console.log("Erro ao deletar", err);
+    });
 
   /**
    * .set(null): ao setar um nó como nulo exclui esse nó do firebase
@@ -90,6 +99,9 @@ function curtir(id) {
     .set(countNumber)
     .then(() => {
       countLike.innerText = countNumber;
+    })
+    .catch((err) => {
+      console.log("Erro ao curtir", err);
     });
 }
 
@@ -112,6 +124,9 @@ function descurtir(id) {
       .update({ curtidas: countNumber })
       .then(() => {
         countLike.innerText = countNumber;
+      })
+      .catch((err) => {
+        console.log("Erro ao descurtir", err);
       });
   }
 }
@@ -120,6 +135,10 @@ function descurtir(id) {
  * Espera o evento de que a DOM está pronta para executar algo
  */
 document.addEventListener("DOMContentLoaded", function () {
+  // LOGGING STATUS CHAMADAS FIREBASE
+  // firebase.database.enableLogging(function (message) {
+  //   console.log("[Firebase]", message);
+  // });
   /**
    * once(): retorna os dados lidos de uma url
    * snapshot: objeto retornado pela leitura
@@ -169,7 +188,6 @@ document.addEventListener("DOMContentLoaded", function () {
   // refCard.on("child_removed", (snapshot) => {
   //   console.log("child_removed", snapshot.key);
   // });
-
   /**
    * Ordenação
    *  E possivel utilizar apenas um metodo de ordenação por vêz
@@ -187,19 +205,54 @@ document.addEventListener("DOMContentLoaded", function () {
   //     console.log(snapshot.key, snapshot.val());
   //     // adicionaCardATela(snapshot.val(), snapshot.key);
   //   });
-
   /**
    * WHERES / Filtros
    *  .startAt() : Traz valores a partir do valor passado por parametro
    *  .endAt(): Traz valores até o valor passado por parametro
    *  .equalTo(): Traz valores correspondentes ao parametro
    *  */
+  // refCard
+  //   .orderByChild("idade")
+  //   .equalTo(26)
+  //   .on("child_added", (snapshot) => {
+  //     adicionaCardATela(snapshot.val(), snapshot.key);
+  //   });
+  /**
+   * Limites
+   * .limitToFirst(): retorna os primeiros registros com quantidade passada por parametro
+   * .limitToLast(): retorna os ultimos registros com quantidade passada por parametro
+   *
+   * Paginação:
+   * .startAt()
+   * .limitToLast()
+   */
+  // refCard
+  //   .orderByChild("idade")
+  //   .startAt(0)
+  //   .limitToLast(5)
+  //   .on("child_added", (snapshot) => {
+  //     adicionaCardATela(snapshot.val(), snapshot.key);
+  //   });
+  // refCard
+  //   .on("value", (snapshot) => {
+  //     snapshot.forEach((data) => {
+  //       adicionaCardATela(data.val(), data.key);
+  //     });
+  //     refCard.off();
+  //   })
+  //   .catch((err) => {
+  //     console.log("Erro no ON", err);
+  //   });
 
-  refCard
-    .orderByChild("idade")
-    .equalTo(26)
-    .on("child_added", (snapshot) => {
-      adicionaCardATela(snapshot.val(), snapshot.key);
+  /**
+   * Usando FETCH ao inves da lib do firebase
+   */
+  fetch("https://app-firebase-udemy.firebaseio.com/card.json")
+    .then((res) => res.json())
+    .then((res) => {
+      for (var key in res) {
+        adicionaCardATela(res[key], key);
+      }
     });
 });
 
