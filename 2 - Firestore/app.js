@@ -55,7 +55,32 @@ function criarCard() {
  * Recebe a referencia do card e exclui do banco de dados
  * @param {String} id Id do card
  */
-function deletar(id) {}
+function deletar(id) {
+  const card = document.getElementById(id);
+
+  //.delete(): Deleta um documento especifico da coleção
+  firebase
+    .firestore()
+    .collection("cards")
+    .doc(id)
+    .delete()
+    .then(() => {
+      card.remove();
+    });
+
+  // update({ prop: firebase.firestore.FieldValue.delete()}): Remove uma propriedade de um documento
+  // firebase
+  //   .firestore()
+  //   .collection("cards")
+  //   .doc(id)
+  //   .update({ curtidas: firebase.firestore.FieldValue.delete() })
+  //   .then(() => {
+  //     console.log("removido curtidas");
+  //   })
+  //   .then(() => {
+  //     card.remove();
+  //   });
+}
 
 /**
  * Incrementa o numero de curtidas
@@ -96,7 +121,7 @@ function descurtir(id) {
     firebase
       .firestore()
       .collection("cards")
-      .doc(id)
+      .doc()
       .update({ curtidas: countNumber })
       .then(() => {
         countLike.innerText = countNumber;
@@ -111,53 +136,64 @@ document.addEventListener("DOMContentLoaded", function () {
   /**
    * .GET(): busca resultados apenas uma vez;
    */
-  firebase
-    .firestore()
-    .collection("cards")
-    .get()
-    .then((snapshot) => {
-      // snapshot.docs(): Os documentos dentro da collection, retorna um objeto
-      // snapshot.empty: retorna um boolean se o snapshot estiver vazio
-      // snapshot.metadata: Metadados da coleção
-      // snapshot.query: Retorna toda a query utilizada no GET
-      // snapshot.size: Número de documentos dentro da coleção
-
-      // snapshot.docChanges: Retorna um array com as mudanças que a coleção
-      // sofreu desde a ultima leitura
-
-      snapshot.docs.forEach((card) => {
-        //card.data(): Retorna os dados do meu documento
-        //card.id: Retorna id do documento
-        //card.isEqual(): retorna um boolean caso o documento passado seja
-        //igual ao documento utilizado (DOCS e collection)
-        //adicionaCardATela(card.data(), card.id);
-      });
-    });
-
+  // firebase
+  //   .firestore()
+  //   .collection("cards")
+  //   .get()
+  //   .then((snapshot) => {
+  // snapshot.docs(): Os documentos dentro da collection, retorna um objeto
+  // snapshot.empty: retorna um boolean se o snapshot estiver vazio
+  // snapshot.metadata: Metadados da coleção
+  // snapshot.query: Retorna toda a query utilizada no GET
+  // snapshot.size: Número de documentos dentro da coleção
+  // snapshot.docChanges: Retorna um array com as mudanças que a coleção
+  // sofreu desde a ultima leitura
+  //   snapshot.docs.forEach((card) => {
+  //     //card.data(): Retorna os dados do meu documento
+  //     //card.id: Retorna id do documento
+  //     //card.isEqual(): retorna um boolean caso o documento passado seja
+  //     //igual ao documento utilizado (DOCS e collection)
+  //     //adicionaCardATela(card.data(), card.id);
+  //   });
+  // });
   /**
    * .onSnapshot(): Observando em tempo real
+   */
+  // firebase
+  //   .firestore()
+  //   .collection("cards")
+  //   .onSnapshot((snapshot) => {
+  //snapshot.docs.forEach(): Tras todos os dados novamente nas mudanças
+  // Traz todos os dados com o evento added na primeira chamada e depois
+  // Traz apenas os novos documentos ou documentos que sofrearam alterações
+  //   snapshot.docChanges().forEach((card) => {
+  //     if (card.type === "added") {
+  //       adicionaCardATela(card.doc.data(), card.doc.id);
+  //     }
+  //     if (card.type === "modified") {
+  //       console.log("modified");
+  //     }
+  //     if (card.type === "removed") {
+  //       console.log("removed");
+  //     }
+  //   });
+  // });
+
+  /**
+   * Consultas
+   * .where(campo, operador, valor): retorna dados que atendam a condição passada
+   * .where() não aceita ||, &&, !=
    */
 
   firebase
     .firestore()
     .collection("cards")
-    .onSnapshot((snapshot) => {
-      //snapshot.docs.forEach(): Tras todos os dados novamente nas mudanças
-
-      // Traz todos os dados com o evento added na primeira chamada e depois
-      // Traz apenas os novos documentos ou documentos que sofrearam alterações
-      snapshot.docChanges().forEach((card) => {
-        if (card.type === "added") {
-          adicionaCardATela(card.doc.data(), card.doc.id);
-        }
-
-        if (card.type === "modified") {
-          console.log("modified");
-        }
-
-        if (card.type === "removed") {
-          console.log("removed");
-        }
+    .where("idade", ">", 25)
+    .where("idade", "<", 30)
+    .get()
+    .then((snapshot) => {
+      snapshot.docs.forEach((card) => {
+        adicionaCardATela(card.data(), card.id);
       });
     });
 });
