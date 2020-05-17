@@ -42,13 +42,45 @@ function criarCard() {
   /**
    * .add({dados}): adiciona os dados dentro de um UID gerado automaticamente
    */
-  firebase
-    .firestore()
-    .collection("cards")
-    .add(card)
-    .then(() => {
-      adicionaCardATela(card, 1);
+  //   firebase
+  //     .firestore()
+  //     .collection("cards")
+  //     .add(card)
+  //     .then(() => {
+  //       adicionaCardATela(card, 1);
+  //     });
+  // }
+
+  /**
+   * Gravações em lote
+   * Para uma gravação em lote, é necessario criar um batch
+   * Batch serve para armazenar operçaões a serem executdas
+   * Pode-se utilizar set, update, delete
+   * Para criar uma operação de set, necessária referencia do doc
+   * Ao criar os métodos é necessario executar o .commit() para executar todas operações
+   * Limite de 500 docs
+   *
+   */
+  var batch = firebase.firestore().batch();
+  var cards = [];
+
+  for (var i = 0; i < 3; i++) {
+    let doc = {
+      nome: NOMES[Math.floor(Math.random() * NOMES.length) - 1],
+      idade: Math.floor(Math.random() * 22 + 18),
+      curtidas: 0,
+    };
+
+    cards.push(doc);
+    let ref = firebase.firestore().collection("cards").doc(String(i));
+    batch.set(ref, doc);
+  }
+
+  batch.commit(() => {
+    cards.map((card, i) => {
+      adicionaCardATela(card, i);
     });
+  });
 }
 
 /**
@@ -178,23 +210,81 @@ document.addEventListener("DOMContentLoaded", function () {
   //     }
   //   });
   // });
-
   /**
    * Consultas
    * .where(campo, operador, valor): retorna dados que atendam a condição passada
    * .where() não aceita ||, &&, !=
    */
+  // firebase
+  //   .firestore()
+  //   .collection("cards")
+  //   .where("idade", ">", 25)
+  //   .where("idade", "<", 30)
+  //   .get()
+  //   .then((snapshot) => {
+  //     snapshot.docs.forEach((card) => {
+  //       adicionaCardATela(card.data(), card.id);
+  //     });
+  //   });
+  /**
+   * Ordenação
+   * .orderBy(campo, ordenação): Ordena pelo campo e pelo tipo de ordenação passado
+   * OBS: Ao usar juntamente campo .where, ordenação deve ter o mesmo campo
+   */
+  // firebase
+  //   .firestore()
+  //   .collection("cards")
+  //   .where("curtidas", ">", 0)
+  //   .orderBy("curtidas", "desc")
+  //   .get()
+  //   .then((snapshot) => {
+  //     snapshot.docs.forEach((card) => {
+  //       adicionaCardATela(card.data(), card.id);
+  //     });
+  //   });
+  /**
+   * Limite
+   * .limit(): Retorna apenas o numero de resultados que foi passado no método
+   */
+  // firebase
+  //   .firestore()
+  //   .collection("cards")
+  //   .limit(3)
+  //   .get()
+  //   .then((snapshot) => {
+  //     snapshot.docs.forEach((card) => {
+  //       adicionaCardATela(card.data(), card.id);
+  //     });
+  //   });
+  /**
+   * Cursores / Filtrar
+   * .startAt(valor): Começa a filtrar no valor passado, funciona como o operador >=
+   * .startAfter(valor): Começa a filtrar no valor passado, funciona como operador >
+   * .endBefore(valor): Começa a filtrar no valor passado, funciona como operador <
+   * .endAt(valor): Funciona como o operador de <=
+   *
+   * Os cursores aceitam além de um valor, aceitam documentos para começar o filtro
+   */
 
+  var startAt;
   firebase
     .firestore()
     .collection("cards")
-    .where("idade", ">", 25)
-    .where("idade", "<", 30)
+    .limit(3)
     .get()
-    .then((snapshot) => {
-      snapshot.docs.forEach((card) => {
-        adicionaCardATela(card.data(), card.id);
-      });
+    .then((snap) => {
+      startAt = snap.docs[snap.docs.length - 1];
+
+      firebase
+        .firestore()
+        .collection("cards")
+        .startAt(startAt)
+        .get()
+        .then((snapshot) => {
+          snapshot.docs.forEach((card) => {
+            adicionaCardATela(card.data(), card.id);
+          });
+        });
     });
 });
 
