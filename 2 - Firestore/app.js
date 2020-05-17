@@ -26,32 +26,6 @@ function criarCard() {
   };
 
   /**
-   * .collection('colecao'): referencia a coleção
-   * .doc(): referencia o documento
-   * .set({dados}) : insere objeto passado por parametro
-   */
-  //   firebase
-  //     .firestore()
-  //     .collection("cards")
-  //     .doc("1")
-  //     .set(card)
-  //     .then(() => {
-  //       adicionaCardATela(card, 1);
-  //     });
-
-  /**
-   * .add({dados}): adiciona os dados dentro de um UID gerado automaticamente
-   */
-  //   firebase
-  //     .firestore()
-  //     .collection("cards")
-  //     .add(card)
-  //     .then(() => {
-  //       adicionaCardATela(card, 1);
-  //     });
-  // }
-
-  /**
    * Gravações em lote
    * Para uma gravação em lote, é necessario criar um batch
    * Batch serve para armazenar operçaões a serem executdas
@@ -81,6 +55,32 @@ function criarCard() {
       adicionaCardATela(card, i);
     });
   });
+
+  /**
+   * .collection('colecao'): referencia a coleção
+   * .doc(): referencia o documento
+   * .set({dados}) : insere objeto passado por parametro
+   */
+  //   firebase
+  //     .firestore()
+  //     .collection("cards")
+  //     .doc("1")
+  //     .set(card)
+  //     .then(() => {
+  //       adicionaCardATela(card, 1);
+  //     });
+
+  /**
+   * .add({dados}): adiciona os dados dentro de um UID gerado automaticamente
+   */
+  //   firebase
+  //     .firestore()
+  //     .collection("cards")
+  //     .add(card)
+  //     .then(() => {
+  //       adicionaCardATela(card, 1);
+  //     });
+  // }
 }
 
 /**
