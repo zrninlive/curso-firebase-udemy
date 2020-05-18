@@ -26,37 +26,6 @@ function criarCard() {
   };
 
   /**
-   * Gravações em lote
-   * Para uma gravação em lote, é necessario criar um batch
-   * Batch serve para armazenar operçaões a serem executdas
-   * Pode-se utilizar set, update, delete
-   * Para criar uma operação de set, necessária referencia do doc
-   * Ao criar os métodos é necessario executar o .commit() para executar todas operações
-   * Limite de 500 docs
-   *
-   */
-  var batch = firebase.firestore().batch();
-  var cards = [];
-
-  for (var i = 0; i < 3; i++) {
-    let doc = {
-      nome: NOMES[Math.floor(Math.random() * NOMES.length) - 1],
-      idade: Math.floor(Math.random() * 22 + 18),
-      curtidas: 0,
-    };
-
-    cards.push(doc);
-    let ref = firebase.firestore().collection("cards").doc(String(i));
-    batch.set(ref, doc);
-  }
-
-  batch.commit(() => {
-    cards.map((card, i) => {
-      adicionaCardATela(card, i);
-    });
-  });
-
-  /**
    * .collection('colecao'): referencia a coleção
    * .doc(): referencia o documento
    * .set({dados}) : insere objeto passado por parametro
@@ -73,14 +42,45 @@ function criarCard() {
   /**
    * .add({dados}): adiciona os dados dentro de um UID gerado automaticamente
    */
-  //   firebase
-  //     .firestore()
-  //     .collection("cards")
-  //     .add(card)
-  //     .then(() => {
-  //       adicionaCardATela(card, 1);
-  //     });
+  firebase
+    .firestore()
+    .collection("cards")
+    .add(card)
+    .then(() => {
+      adicionaCardATela(card, 1);
+    });
   // }
+
+  /**
+   * Gravações em lote
+   * Para uma gravação em lote, é necessario criar um batch
+   * Batch serve para armazenar operçaões a serem executdas
+   * Pode-se utilizar set, update, delete
+   * Para criar uma operação de set, necessária referencia do doc
+   * Ao criar os métodos é necessario executar o .commit() para executar todas operações
+   * Limite de 500 docs
+   *
+   */
+  // var batch = firebase.firestore().batch();
+  // var cards = [];
+
+  // for (var i = 0; i < 3; i++) {
+  //   let doc = {
+  //     nome: NOMES[Math.floor(Math.random() * NOMES.length) - 1],
+  //     idade: Math.floor(Math.random() * 22 + 18),
+  //     curtidas: 0,
+  //   };
+
+  //   cards.push(doc);
+  //   let ref = firebase.firestore().collection("cards").doc(String(i));
+  //   batch.set(ref, doc);
+  // }
+
+  // batch.commit(() => {
+  //   cards.map((card, i) => {
+  //     adicionaCardATela(card, i);
+  //   });
+  // });
 }
 
 /**
@@ -168,26 +168,27 @@ document.addEventListener("DOMContentLoaded", function () {
   /**
    * .GET(): busca resultados apenas uma vez;
    */
-  // firebase
-  //   .firestore()
-  //   .collection("cards")
-  //   .get()
-  //   .then((snapshot) => {
-  // snapshot.docs(): Os documentos dentro da collection, retorna um objeto
-  // snapshot.empty: retorna um boolean se o snapshot estiver vazio
-  // snapshot.metadata: Metadados da coleção
-  // snapshot.query: Retorna toda a query utilizada no GET
-  // snapshot.size: Número de documentos dentro da coleção
-  // snapshot.docChanges: Retorna um array com as mudanças que a coleção
-  // sofreu desde a ultima leitura
-  //   snapshot.docs.forEach((card) => {
-  //     //card.data(): Retorna os dados do meu documento
-  //     //card.id: Retorna id do documento
-  //     //card.isEqual(): retorna um boolean caso o documento passado seja
-  //     //igual ao documento utilizado (DOCS e collection)
-  //     //adicionaCardATela(card.data(), card.id);
-  //   });
-  // });
+  firebase
+    .firestore()
+    .collection("cards")
+    .get()
+    .then((snapshot) => {
+      // snapshot.docs(): Os documentos dentro da collection, retorna um objeto
+      // snapshot.empty: retorna um boolean se o snapshot estiver vazio
+      // snapshot.metadata: Metadados da coleção
+      // snapshot.query: Retorna toda a query utilizada no GET
+      // snapshot.size: Número de documentos dentro da coleção
+      // snapshot.docChanges: Retorna um array com as mudanças que a coleção
+      // sofreu desde a ultima leitura
+      snapshot.docs.forEach((card) => {
+        //card.data(): Retorna os dados do meu documento
+        //card.id: Retorna id do documento
+        //card.isEqual(): retorna um boolean caso o documento passado seja
+        //igual ao documento utilizado (DOCS e collection)
+        adicionaCardATela(card.data(), card.id);
+      });
+    });
+
   /**
    * .onSnapshot(): Observando em tempo real
    */
@@ -266,26 +267,26 @@ document.addEventListener("DOMContentLoaded", function () {
    * Os cursores aceitam além de um valor, aceitam documentos para começar o filtro
    */
 
-  var startAt;
-  firebase
-    .firestore()
-    .collection("cards")
-    .limit(3)
-    .get()
-    .then((snap) => {
-      startAt = snap.docs[snap.docs.length - 1];
+  // var startAt;
+  // firebase
+  //   .firestore()
+  //   .collection("cards")
+  //   .limit(3)
+  //   .get()
+  //   .then((snap) => {
+  //     startAt = snap.docs[snap.docs.length - 1];
 
-      firebase
-        .firestore()
-        .collection("cards")
-        .startAt(startAt)
-        .get()
-        .then((snapshot) => {
-          snapshot.docs.forEach((card) => {
-            adicionaCardATela(card.data(), card.id);
-          });
-        });
-    });
+  //     firebase
+  //       .firestore()
+  //       .collection("cards")
+  //       .startAt(startAt)
+  //       .get()
+  //       .then((snapshot) => {
+  //         snapshot.docs.forEach((card) => {
+  //           adicionaCardATela(card.data(), card.id);
+  //         });
+  //       });
+  //   });
 });
 
 /**

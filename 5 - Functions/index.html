@@ -1,24 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Firebase Functions</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-    <link rel="stylesheet" href="./main.css">
-</head>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+      integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="./main.css" />
+  </head>
 
-<body>
-
+  <body>
     <main class="container-fluid">
-        <div class="text-center">
-            <button type="button" class="btn btn-primary" onclick="criarCard()">Adicionar Card</button>
-        </div>
-        <div class="card-container">
-
-        </div>
+      <div class="text-center">
+        <button type="button" class="btn btn-primary" onclick="criarCard()">
+          Adicionar Card
+        </button>
+      </div>
+      <div class="card-container"></div>
     </main>
 
     <!-- Firebase App is always required and must be first -->
@@ -27,18 +30,18 @@
     <script src="https://www.gstatic.com/firebasejs/5.4.1/firebase-database.js"></script>
     <!-- Inicializa o firebase -->
     <script>
-        var config = {
-            apiKey: "",
-            authDomain: "",
-            databaseURL: "",
-            projectId: "",
-            storageBucket: "",
-            messagingSenderId: ""
-        };
-        firebase.initializeApp(config);
+      const firebaseConfig = {
+        apiKey: "AIzaSyBfdcTVriqCP3mNck2va3mreB1dsymMpX0",
+        authDomain: "app-firebase-udemy.firebaseapp.com",
+        databaseURL: "https://app-firebase-udemy.firebaseio.com",
+        projectId: "app-firebase-udemy",
+        storageBucket: "app-firebase-udemy.appspot.com",
+        messagingSenderId: "738651733694",
+        appId: "1:738651733694:web:60c12c1a9fb90bb31a28ef",
+      };
+      firebase.initializeApp(firebaseConfig);
     </script>
     <!-- Nosso app -->
     <script src="./app.js"></script>
-</body>
-
+  </body>
 </html>
